@@ -1,0 +1,134 @@
+#!/bin/bash
+clear
+nhapthongtin(){
+	echo "Nhap"
+	read nhap
+	echo $nhap >> data.txt
+}
+xuatthongtin(){
+echo "Xuat file data.txt"
+while read line
+do
+	echo ${line}
+done < data.txt
+}
+getIPfromOS(){
+		echo "Nhap he dieu hanh de xuat IP"
+		read tim1
+		while read line
+		do
+			data=`echo $line | awk 'BEGIN{FS=" "}{print $3}'`
+			if [ "$data" = "$tim1" ]
+			then
+				data=`echo $line | awk 'BEGIN{FS=" "}{print $2}'`
+				echo $data	
+			fi
+		done < data.txt 
+}
+getIPfromProtocol(){
+		echo "Nhap giao thuc de xuat IP"
+		read tim2
+		while read line
+		do
+			data=`echo $line | awk 'BEGIN{FS=" "}{print $1}'`
+			if [ "$data" = "$tim2" ]
+			then
+				data=`echo $line | awk 'BEGIN{FS=" "}{print $2}'`
+				echo $data
+			fi
+		done < data.txt 
+}
+CountProtocol(){
+		echo "Nhap giao thuc de bet so lan ket noi"
+		read tim2
+		dem=0
+		while read line
+		do
+			data=`echo $line | awk 'BEGIN{FS=" "}{print $1}'`
+			if [ "$data" = "$tim2" ]
+			then
+				data=`echo $line | awk 'BEGIN{FS=" "}{print $2}'`
+				let dem++
+			fi
+		done < data.txt 
+		echo $dem
+}
+findOS(){
+	dem=0
+	while read line
+		do
+			data=`echo $line | awk 'BEGIN{FS=" "}{print $3}'`
+			a[$dem]=$data	
+			let dem++
+		done < data.txt
+	dem1=0
+	for((i=0;i<${#a[*]};i++))
+	do
+		kq=0
+		for((j=0;j<$i;j++))
+		do
+			if [ "${a[$i]}" = "${a[$j]}" ]
+			then
+				kq=1
+			fi 
+		done
+	if [ $kq -eq 0 ]
+	then
+		b[$dem1]=${a[$i]}
+		let dem1++
+	fi
+	done
+	echo "So he dieu hanh"
+	echo ${b[*]}
+}
+Info(){
+	for((i=0;i<${#b[*]};i++))
+	do
+		dem=0
+		echo ${b[$i]}
+		while read line
+		do
+			data=`echo $line | awk 'BEGIN{FS=" "}{print $3}'`
+			if [ "$data" = "${b[$i]}" ]
+			then
+				let dem++
+			fi
+		done < data.txt 
+		echo $dem
+		echo ${b[$i]} $dem >> thongke.txt
+	done
+}
+while true
+do
+	echo "----------------------------------"
+	echo "Phan Dong Thien Long - 3118410242"
+	echo "Hay thuc hien lua chon"
+	echo "1.Nhap thong tin vao file data"
+	echo "2.Xuat toan bo thong tin trong file data"
+	echo "3.Nhap vao he dieu hanh de biet dia chi IP"
+	echo "4.Nhap vao giao thuc de biet dia chi IP"
+	echo "5.Nhap vao giao thuc de biet so lan ket noi"
+	echo "6.Thuc hien thong ke"
+	echo "7.Ket thuc"
+	read chon
+	case $chon in
+		1)
+		clear 
+		nhapthongtin;;
+		2)
+		clear 
+		xuatthongtin;;
+		3)
+		clear
+		getIPfromOS;;
+		4) clear
+		getIPfromProtocol;;
+		5) clear
+		CountProtocol;;
+		6) clear
+		findOS
+		Info;;
+		7) break;;
+	esac
+done
+
